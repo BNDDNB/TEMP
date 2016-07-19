@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:block.cc">
+   </FileRef>
+   <FileRef
+      location = "group:block.h">
+   </FileRef>
+   <FileRef
+      location = "group:coords.cc">
+   </FileRef>
+   <FileRef
+      location = "group:coords.h">
+   </FileRef>
+   <FileRef
+      location = "group:display.cc">
+   </FileRef>
+   <FileRef
+      location = "group:display.h">
+   </FileRef>
+   <FileRef
+      location = "group:cmdInterpret.h">
+   </FileRef>
+   <FileRef
+      location = "group:interpret.cc">
+   </FileRef>
+   <FileRef
+      location = "group:main_nb.cc">
+   </FileRef>
+   <FileRef
+      location = "group:nextblock.cc">
+   </FileRef>
+   <FileRef
+      location = "group:nextblock.h">
+   </FileRef>
+   <FileRef
+      location = "group:game.cc">
+   </FileRef>
+   <FileRef
+      location = "group:game.h">
+   </FileRef>
+   <FileRef
+      location = "group:board.cc">
+   </FileRef>
+   <FileRef
+      location = "group:board.h">
+   </FileRef>
+   <FileRef
+      location = "group:main.cc">
+   </FileRef>
+</Workspace>
