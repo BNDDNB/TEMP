@@ -5,9 +5,11 @@ from datetime import date, datetime, timedelta
 import urllib
 import gzip
 import pandas as pd
-
+from proc import strategy1
+import numpy as np
 
 #def filewriter():
+dataf = pd.DataFrame()
 
 def catchbyurl(url24, is_saved):
 	response = urllib2.urlopen(url24)
@@ -32,27 +34,38 @@ def filehlpr(filename, targetname):
 	outF.write(s)
 	outF.close()
 
+
 def catchhist(url, is_saved):
-	#find day time range
-	# curtime = time.time()
-	# yesterday = date.today() - timedelta(1)
-	# unix_yesterday = yesterday.strftime("%s")
 	dlname = 'data/data.gz'
 	tgname = 'data/daily.csv'
 	finname ='data/dailyproc.csv'
-	urllib.urlretrieve(url,dlname)
+	#urllib.urlretrieve(url,dlname)
 	filehlpr(dlname,tgname)
-	data = pd.read_csv(tgname, names = ['unix', 'price', 'vol'])
-	data['unix'] = pd.to_datetime(data['unix'],unit='s')
-	data = data.set_index('unix')
-	data2 = data.resample('1min', how = {'price':'last','vol':'sum'})
-	data2.to_csv(finname, sep=',', encoding='utf-8')
-	#print data2['price']
-	#print data2.price
 
-	#panda
-	# reader = csv.reader('data/daily.csv', delimiter = ',')
-	# for row in reader:
+	###########Proc & After########
+	dataf = pd.read_csv(tgname, names = ['unix', 'price', 'vol'])
+	dataf['unix'] = pd.to_datetime(dataf['unix'],unit='s')
+	dataf = dataf.set_index('unix')
+	dataf = dataf.resample('1min', how = {'price':'last'})
+	dataf.price = dataf.price.fillna(method = 'ffill')
+	dataf['signal']=0
+	dataf['pnl'] = np.nan
+	print len(dataf.index)
+	
+	for i in range(987655,992000-1441):
+		#print "im working"
+		dataarr = dataf['price'][i:1440+i].tolist()
+		oldpos = dataf['signal'][1439+i]
+		newpos,pnl = strategy1(dataarr,oldpos)
+		dataf.ix[1440+i,'signal']= newpos
+		dataf.ix[1439+i,'pnl'] = pnl
+
+	print dataf['signal'][1441:1700]
+	print dataf['pnl'][1441:1700]
+	#####if dataf.index[-1].to_datetime <= datetime.utcnow():
+
+
+	#data.to_csv(finname, sep=',', encoding='utf-8')
 
 	#cr = csv.reader(response, delimiter = ',')
 	#grab only available data
