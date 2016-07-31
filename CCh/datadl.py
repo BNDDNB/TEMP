@@ -39,14 +39,16 @@ def catchhist(url, is_saved):
 	# unix_yesterday = yesterday.strftime("%s")
 	dlname = 'data/data.gz'
 	tgname = 'data/daily.csv'
+	finname ='data/dailyproc.csv'
 	urllib.urlretrieve(url,dlname)
 	filehlpr(dlname,tgname)
 	data = pd.read_csv(tgname, names = ['unix', 'price', 'vol'])
-	data['unix'] = pd.to_datetime(df['unix'],unit='s')
+	data['unix'] = pd.to_datetime(data['unix'],unit='s')
 	data = data.set_index('unix')
-	data.resample('M', how = {'price':'last','vol':'sum'})
-	for row in data:
-		print row
+	data2 = data.resample('1min', how = {'price':'last','vol':'sum'})
+	data2.to_csv(finname, sep=',', encoding='utf-8')
+	#print data2['price']
+	#print data2.price
 
 	#panda
 	# reader = csv.reader('data/daily.csv', delimiter = ',')
