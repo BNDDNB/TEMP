@@ -47,14 +47,12 @@ and update. There is no input nor output from the function
 def background_proc():
     #global ini.dataf, background_controller
     dl.catchhist('http://api.bitcoincharts.com/v1/csv/bitfinexUSD.csv.gz', False)
-    print ini.dataf
     startime = time.time()
     dl.dataupdtr('https://api.bitcoinaverage.com/history/USD/per_minute_24h_sliding_window.csv',1)
     while ini.background_controller:
         time.sleep(60-(time.time()-startime))
         startime =time.time()
         dl.dataupdtr('https://api.bitcoinaverage.com/history/USD/per_minute_24h_sliding_window.csv',0)
-        #print ini.dataf
 
 
 
@@ -97,11 +95,10 @@ def clientthread(conn):
                 timestr = data[9:25]
                 timeobj = datetime.strptime(timestr,'%Y-%m-%d-%H:%M')
                 timestmp = pd.Timestamp(timeobj)
-                reply = str(ini.dataf.index[timestmp]['signal'])
+                reply = str(ini.dataf.loc[timestmp]['signal'])
             except ValueError:
                 reply = 'Server has no data...'
         elif data[0:7] =='--reset':
-            #do it later
             ini.background_controller = False
             print "closing down background process in 60s.."
             time.sleep(60)
