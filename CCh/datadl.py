@@ -51,7 +51,6 @@ However, only for this task...
 '''
 
 def postproc(low_bound, up_bound):
-	#global ini.dataf
 	for i in range(low_bound,up_bound):
 		dataarr = ini.dataf['price'][i:1440+i].tolist()
 		oldpos = ini.dataf['signal'][1439+i]
@@ -77,12 +76,11 @@ Improve: Need to understand the datastructure of raw data first
 '''
 
 def catchhist(url, is_saved):
-	#global ini.dataf
-	dlname = 'data/data.gz'
-	tgname = 'data/daily_test.csv'
+	dlname = 'data/hist.gz'
+	tgname = 'data/hist.csv'
 	finname ='data/dailyproc.csv'
-	#urllib.urlretrieve(url,dlname)
-	#filehlpr(dlname,tgname)
+	urllib.urlretrieve(url,dlname)
+	filehlpr(dlname,tgname)
 
 	###########Proc & After########
 	ini.dataf = pd.read_csv(tgname, names = ['unix', 'price', 'vol'])
@@ -93,7 +91,7 @@ def catchhist(url, is_saved):
 	ini.dataf['signal'] = 0
 	ini.dataf['pnl'] = np.nan
 	postproc(0, len(ini.dataf.index)-1440)
-
+	ini.dataf.to_csv(finname, sep = ',', encoding = 'utf-8')
 
 
 
@@ -143,7 +141,6 @@ Imp: None...
 
 
 def data_filler (row ,value, mode_val):
-	#global ini.dataf
 	if mode_val ==0:
 		for i in range(0,value):
 			last_date_in_frame = ini.dataf.index[-1].to_datetime()
@@ -172,12 +169,10 @@ Imp: May be combined with permin update, depends on data structure
 '''
 
 def updtr_hlpr_once(handlr):
-	#global ini.dataf,ini.ctr
 	for row in handlr:
 		row_date =  datetime.strptime(row[0],'%Y-%m-%d %H:%M:%S')
 		last_date_in_frame = ini.dataf.index[-1].to_datetime()
 		value = time_calc(row_date, last_date_in_frame,1)
-		#print "last date is " + str(last_date_in_frame) + 'row is '+ str(row_date) + "val is " + str(value)
 		if value == 1:
 			data_filler(row, 0,1)
 			ini.ctr+=1
@@ -202,7 +197,6 @@ Imp:...
 '''
 
 def updtr_hlpr_min (handlr):
-	#global ini.dataf,ini.ctr
 	for row in reversed(list(handlr)):
 		row_date = datetime.strptime(row[0],'%Y-%m-%d %H:%M:%S')
 		last_date_in_frame = ini.dataf.index[-1].to_datetime()
@@ -237,7 +231,6 @@ Imp: none
 
 
 def dataupdtr(url24, mode_val):
-	#global ini.dataf, ini.ctr
 	ini.ctr = 0
 	last_date_in_frame = ini.dataf.index[-1].to_datetime()
 	date_now = datetime.utcnow()

@@ -33,5 +33,4 @@ def strategy1(priceList,pos_old):
     pos_new = pos_old - 1
   else:
     pos_new = pos_old
-  #print str(S_avg) + ' ' + str(sigma) + ' ' + str(S[-2]) + ' ' + str(pos_new)
   return pos_new, PnL
