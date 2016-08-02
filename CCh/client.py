@@ -51,7 +51,7 @@ def email_sendr():
 	receivers = ['bonan.dong@gmail.com']
 
 	SUBJECT = "SMTP e-mail test"
-	TEXT = "This is a test e-mail message."
+	TEXT = "Something wrong happend with server"
 
 	message  = 'Subject: %s\n\n%s' % (SUBJECT, TEXT)
 	server = smtplib.SMTP('smtp.gmail.com:587')
@@ -109,6 +109,9 @@ try:
 		time.sleep(1)
 		data = sock.recv(1024)
 		print data
+		if message == '--reset':
+			sock.close()
+			sys.exit(0)
 
 finally:
     print >>sys.stderr, 'closing socket'

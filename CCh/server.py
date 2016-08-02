@@ -79,8 +79,7 @@ def clientthread(conn):
     while True:
         #Receiving from client
         data = conn.recv(1024)
-        reply = 'Not Recognized... \n'
-
+        
         #in order of price, signal and reset
         if data[0:7] == '--price':
             try:
@@ -88,7 +87,7 @@ def clientthread(conn):
                 timeobj = datetime.strptime(timestr,'%Y-%m-%d-%H:%M')
                 timestmp = pd.Timestamp(timeobj)
                 reply = str(ini.dataf.loc[timestmp]['price'])
-            except ValueError:
+            except:
                 reply = 'Server has no data...'      
         elif data[0:8] == '--signal':
             try:
@@ -96,16 +95,21 @@ def clientthread(conn):
                 timeobj = datetime.strptime(timestr,'%Y-%m-%d-%H:%M')
                 timestmp = pd.Timestamp(timeobj)
                 reply = str(ini.dataf.loc[timestmp]['signal'])
-            except ValueError:
+            except:
                 reply = 'Server has no data...'
         elif data[0:7] =='--reset':
             ini.background_controller = False
             print "closing down background process in 60s.."
             time.sleep(60)
+            print "restarting now..."
+            ini.dataf = pd.DataFrame()
             thread2 = threading.Thread(target = background_proc)
             thread2.daemon = True
             ini.background_controller = True
             thread2.start()
+            reply = 'Reset completed...'
+        else:
+            reply = 'Not Recognized... \n'
 
         conn.sendall(reply)
         if not data: 
